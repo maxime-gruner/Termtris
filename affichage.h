@@ -9,6 +9,8 @@
 #include <fcntl.h>
 #include <string.h>
 
+#define HAUTEUR 28 //taille par defaut du jeu entier
+
 /* Structure representant la map*/
 typedef struct map{
 	int largeur; //largeur de le map
