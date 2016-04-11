@@ -20,10 +20,13 @@ typedef struct level{
 	
 	int n_brique;
 	brique *brique_type; //tableau de taille n type de brique
-	
+	float speed;
+	int total;
+	char *deroulement;
 }level;
 
 level *read_level(int fd);
+void load_deroulement(level *l,int fd);
 
 
 void aff_map(level *m);

@@ -57,9 +57,10 @@ level *read_level(int fd){
 	
 	
 	for(i=0;i<n_brique;i++){
-		m->brique_type[i] = read_brique(fd);
-		
+		m->brique_type[i] = read_brique(fd); //charge les different type de brique
 	}
+	
+	load_deroulement(&(*m),fd); //charge la vitesse et le deroulement du jeu
 	
 	
 	return m;
@@ -73,15 +74,36 @@ void aff_map(level *m){
 	int i=0, j=0;
 	for(i=0;i< m->hauteur;i++){
 		for(j=0;j< m->largeur;j++){
-		//write(1,&m->map[i][j],1);
 			if(m->map[i][j]=='1')
 				write(1,"@",1);
 			else if(m->map[i][j]=='0'){
 				write(1," ",1);
-			}else
-				printf("WTF %d %d %d\n",i,j,m->map[i][j]);
+			}
 		}write(1,"\n",1);
 	}
+}
+
+void load_deroulement(level *l,int fd){
+	char buffer[64]; char *s=NULL; int i=0;
+	int ret = 0;
+	ret = read(fd,buffer,4); buffer[ret-1] = '\0' ;
+	s=strpbrk(buffer," "); *s='\0';
+	
+	
+	l->speed = (float)strtol(buffer,NULL,10)/strtol(buffer+2,NULL,10); //recup la vitesse
+	
+	
+	ret = read(fd,buffer,3); buffer[ret-1] = '\0' ;
+	l->total= (float)strtol(buffer,NULL,10); //recup la vitesse
+	l->deroulement = calloc(l->total,sizeof(char));
+	
+	
+	for(i=0;i<l->total;i++){
+		ret = read(fd,buffer,2); buffer[ret-1] = '\0' ;
+		l->deroulement[i] = strtol(buffer,NULL,10);
+	}
+	
+	
 }
 
 

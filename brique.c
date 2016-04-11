@@ -15,8 +15,10 @@ brique read_brique(int fd){
 				br.bloc[i] = calloc(br.h_brique,sizeof(char)); 
 				for(j=0;j<br.l_brique+1;j++){
 					ret = read(fd,buffer,1);
-					if(buffer[0] != '\n'){
+					if(buffer[0] == '1'){
 						br.bloc[i][j] = buffer[0];
+					}else if(buffer[0] == '0'){
+						br.bloc[i][j] = ' ';
 					}
 			}
 		}
@@ -30,9 +32,8 @@ void aff_brique(brique *b){
 	int i=0,j=0;
 	for(i=0;i< b->h_brique;i++){
 		for(j=0;j< b->l_brique;j++){
-			
 			write(1,&b->bloc[i][j],1);
-		}printf("\n");
+		}write(1,"\n",1);
 	}
 }
 
