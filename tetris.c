@@ -1,11 +1,12 @@
 #include "affichage.h"
+#include "brique.h"
 
 /* restaure le shell en mode normal */
 void restore_term(struct termios *save){
 	tcsetattr(0,TCSANOW,save);
 }
 
-/* configure le shelle en mode non cannonique, et save l ancienne configuration */
+/* configure le shell en mode non cannonique, et save l ancienne configuration */
 int set_term(struct termios *original){
 	struct termios new_term;
 	write(1,"\e[1;1H\e[2J",11); //place le curseur en haut a gauche, et clear le terminal
@@ -14,14 +15,15 @@ int set_term(struct termios *original){
 	
 	cfmakeraw(&new_term); //passe le terminal en mode RAW
 	new_term.c_oflag |= OPOST; //sinon le terminal gere mal les \n
-	tcsetattr(0,TCSAFLUSH, &new_term);
+	tcsetattr(0,TCSANOW, &new_term);
 	return 0;
 }
 
 
 
 
-int main (int argc, char *argv[]){	
+int main (int argc, char *argv[]){
+	//int i=0;
 	struct termios save_term;
 	set_term(&save_term);
 	
@@ -31,12 +33,13 @@ int main (int argc, char *argv[]){
 		if(fd == -1){
 			perror("erreur ouverture de fichier");
 		}
-		map *m=read_map(fd);
+		level *m=read_level(fd);
 		aff_map(m);
 		
 	do{
+		aff_brique(&m->brique_type[0]);
 		c=getchar();
-		
+		//i++;
 	}while(c!='q');
 	restore_term(&save_term);
 	

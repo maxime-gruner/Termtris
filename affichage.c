@@ -1,60 +1,85 @@
 #include "affichage.h"
 
 /* Prend un descripteur de fichier en entrer, va lire la map dans le fichier et la renverra dans un tableau a 2 dimensions */
-map *read_map(int fd){
-	int i = 0,j = 0;
-	map *m = malloc(sizeof(map));
+level *read_level(int fd){
+	int i = 0,j = 0;int ret=0;
+	int n_brique=0;
+	level *m = malloc(sizeof(level));
 	
-	char buffer[128];
+	char buffer[64];
+	
 	read(fd,buffer,5); //lit les dimension
+	
 	char *s=strpbrk(buffer," ");
-	*s='\0';
+	*s='\0';*(s+3)='\0';
 	int haut_debut = strtol(buffer,NULL,10); //convertis les dimensions en entier
 	m->largeur = strtol(buffer+2,NULL,10);
 	
 	m->hauteur = HAUTEUR;
-	m->matrice = malloc(sizeof(char*)*m->hauteur);
+	
+	//printf("'%d %d'\n",m->hauteur, m->largeur);
+	
+	
+	m->map = malloc(sizeof(char*)*m->hauteur);
 	for(i=0;i<m->hauteur; i++){
-		m->matrice[i] = malloc(sizeof(char)*m->largeur+1);
+		m->map[i] = calloc(m->largeur,sizeof(char));
 	}
 	
+	/*Chargement de la map */
 	for(i=0;i< m->hauteur;i++){
+		/*Bas de la map charge a partir du fichier */
 		if(i>= m->hauteur-haut_debut){
-			int ret=read(fd,buffer,m->largeur+1); //lit toute la ligne de le map
+			ret=read(fd,buffer,m->largeur); //lit toute la ligne de le map
+			lseek(fd,1,SEEK_CUR);
 				if(ret == -1 ){
 					perror("Erreur de lecture du niveau");
 					return NULL;
 				}
 		}
-				
-		//m->matrice[i]=malloc(sizeof(char)*(m->largeur+1));
-		for(j=0;j<= m->largeur;j++){
-			if(i< m->hauteur-haut_debut){
-				m->matrice[i][j] = '0';
+		for(j=0;j< m->largeur;j++){
+			if(i< m->hauteur-haut_debut ){
+				m->map[i][j] = '0';
 			}else{
-				
 				if(buffer[j]=='1' ){
-					m->matrice[i][j]='1'; //mur
-				}else if(buffer[j] == 0 && buffer[j] != '\n'){
-				
-					m->matrice[i][j] = '0'; //rien
+					m->map[i][j]='1'; //mur
+				}else if(buffer[j] =='0'){
+					m->map[i][j] = '0'; //rien
 				}
 			}
 		}
 	}
+	
+	/* Chargement des briques */ 
+	ret = read(fd,buffer,2); buffer[ret-1]='\0';
+	n_brique=strtol(buffer,NULL,10);
+	m->n_brique = n_brique;
+	m->brique_type = malloc(n_brique*sizeof(brique)); //initalisation tableau des type de brique
+	
+	
+	for(i=0;i<n_brique;i++){
+		m->brique_type[i] = read_brique(fd);
+		
+	}
+	
+	
 	return m;
 }
 
+
+
+
 /* affichera la map dans le terminal */
-void aff_map(map *m){
+void aff_map(level *m){
 	int i=0, j=0;
 	for(i=0;i< m->hauteur;i++){
 		for(j=0;j< m->largeur;j++){
-			if(m->matrice[i][j]=='1')
+		//write(1,&m->map[i][j],1);
+			if(m->map[i][j]=='1')
 				write(1,"@",1);
-			else{
+			else if(m->map[i][j]=='0'){
 				write(1," ",1);
-			}
+			}else
+				printf("WTF %d %d %d\n",i,j,m->map[i][j]);
 		}write(1,"\n",1);
 	}
 }
