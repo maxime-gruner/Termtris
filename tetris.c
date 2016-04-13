@@ -45,7 +45,6 @@ int main (int argc, char *argv[]){
 		aff_map(m);
 		nb=m->deroulement[i];
 		brique tmp = m->brique_type[nb-1]; 
-		write(1,"\e[1;1H",7);
 		aff_brique(&tmp);
 		c=getchar();
 		i++;
