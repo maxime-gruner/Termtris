@@ -1,15 +1,20 @@
 
 CC=gcc
-CFLAGS= -std=gnu99 -Wall -Werror -o
+CFLAGS= -std=gnu99 -Wall -g
 EXEC=tetris
 
 all: $(EXEC)
 
-tetris.o: tetris.c
-	$(CC) $(CFLAGS) tetris.o -c tetris.c
-	
-tetris: tetris.o
-	$(CC) $(CFLAGS) tetris tetris.o
+
+
+tetris: tetris.o affichage.o brique.o
+	$(CC) $(CFLAGS) -o $@ $^ 
+
+main.o : brique.h
+
+%.o: %.c
+	$(CC) $(CFLAGS) -o $@ -c $< 
+		
 
 clean :
 	rm -rf *.o
