@@ -1,5 +1,6 @@
 #include "affichage.h"
 #include "brique.h"
+#include <poll.h>
 
 /* restaure le shell en mode normal */
 void restore_term(struct termios *save){
@@ -25,10 +26,14 @@ int set_term(struct termios *original){
 
 
 int main (int argc, char *argv[]){
-	int i=0; int nb;
+	int i=0; int nb;int ret;
 	write(1,"\e[1;1H\e[2J",11); //place le curseur en haut a gauche, et clear le terminal
 	struct termios save_term;
 	set_term(&save_term);
+	
+	struct pollfd pollfds[1];
+	pollfds[0].fd = 1;
+	pollfds[0].events = POLLIN;
 	
 	write(1,"\x1b[?25l",6); //cache le curseur
 	char c;
@@ -41,13 +46,26 @@ int main (int argc, char *argv[]){
 		
 		
 	do{
-		write(1,"\e[1;1H\e[2J",11);
-		aff_map(m);
 		nb=m->deroulement[i];
-		brique tmp = m->brique_type[nb-1]; 
-		aff_brique(&tmp);
-		c=getchar();
-		i++;
+		brique tmp = m->brique_type[nb-1];
+		
+		while(1){
+			//poll(NULL,0,1000);
+			ret = poll(pollfds,1,1000);
+				if(ret >0){
+					input(&tmp);
+					
+			}
+				move(&tmp,1,0); //descente auto
+			write(1,"\e[1;1H\e[2J",11);
+			aff_map(m);
+			aff_brique(&tmp);
+			
+		} 
+		
+		
+		//c=getchar();
+		//i++;
 	}while(i<m->total);
 	
 	restore_term(&save_term);

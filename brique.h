@@ -15,11 +15,13 @@ typedef struct brique{
 	int h_brique; //hauteur de la brique
 	int pos_x; //position de la brique (l axe x est l hauteur sur le terminal !) la position d une brique est celle de son bloc[0][0]
 	int pos_y;
-	
 }brique;
 
-brique read_brique(int fd);
+brique read_brique(char* chaine);
 void aff_brique(brique *b);
+
+void move(brique *b,int x,int y);
+void input(brique *b);
 
 
 #endif

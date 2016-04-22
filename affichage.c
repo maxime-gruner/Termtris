@@ -2,67 +2,57 @@
 
 /* Prend un descripteur de fichier en entrer, va lire la map dans le fichier et la renverra dans un tableau a 2 dimensions */
 level *read_level(int fd){
-	int i = 0,j = 0;int ret=0;
-	int n_brique=0;
-	level *m = malloc(sizeof(level));
-	
-	char buffer[64];
-	
-	read(fd,buffer,5); //lit les dimension
-	
-	char *s=strpbrk(buffer," ");
-	*s='\0';*(s+3)='\0';
-	int haut_debut = strtol(buffer,NULL,10); //convertis les dimensions en entier
-	m->largeur = strtol(buffer+2,NULL,10);
-	
-	m->hauteur = HAUTEUR;
+  int i = 0,j = 0;
+  level *m = malloc(sizeof(level));
+  char buffer[BUFMAX];
+  read(fd,buffer,BUFMAX); //lit les dimension
+  char *s=strtok(buffer," ");
+  int haut_debut = strtol(buffer,NULL,10); //convertis les dimensions en entier
+  s=strtok(NULL,"\n");
+  m->largeur = strtol(s,NULL,10);
+  m->hauteur = HAUTEUR;
 	
 	//printf("'%d %d'\n",m->hauteur, m->largeur);
 	
 	
-	m->map = malloc(sizeof(char*)*m->hauteur);
+	m->map = malloc(m->largeur*m->hauteur);
 	for(i=0;i<m->hauteur; i++){
-		m->map[i] = calloc(m->largeur,sizeof(char));
+		m->map[i] = calloc(m->largeur,1);
 	}
 	
 	/*Chargement de la map */
-	for(i=0;i< m->hauteur;i++){
+	for(i=0;i<m->hauteur;i++){
 		/*Bas de la map charge a partir du fichier */
 		if(i>= m->hauteur-haut_debut){
-			ret=read(fd,buffer,m->largeur); //lit toute la ligne de le map
-			lseek(fd,1,SEEK_CUR);
-				if(ret == -1 ){
-					perror("Erreur de lecture du niveau");
-					return NULL;
-				}
+			s=strtok(NULL,"\n"); //lit toute la ligne de le map
 		}
 		for(j=0;j< m->largeur;j++){
 			if(i< m->hauteur-haut_debut ){
 				m->map[i][j] = '0';
 			}else{
-				if(buffer[j]=='1' ){
-					m->map[i][j]='1'; //mur
-				}else if(buffer[j] =='0'){
-					m->map[i][j] = '0'; //rien
-				}
+				m->map[i][j]=s[j];
 			}
 		}
 	}
 	
 	/* Chargement des briques */ 
-	ret = read(fd,buffer,2); buffer[ret-1]='\0';
-	n_brique=strtol(buffer,NULL,10);
-	m->n_brique = n_brique;
-	m->brique_type = malloc(n_brique*sizeof(brique)); //initalisation tableau des type de brique
+	s=strtok(NULL,"\n");
+	m->n_brique = strtol(buffer,NULL,10);
+	m->brique_type = malloc(m->n_brique*sizeof(brique)); //initalisation tableau des type de brique
+	s=strtok(NULL,"\0");
+	//printf("%s\n",s);
+	for(i=0;i<m->n_brique;i++){
+		//printf("brique %i\n",i);
+		m->brique_type[i] = read_brique(s); //charge les different type de brique
 	
-	
-	for(i=0;i<n_brique;i++){
-		m->brique_type[i] = read_brique(fd); //charge les different type de brique
+		
 	}
 	
-	load_deroulement(&(*m),fd); //charge la vitesse et le deroulement du jeu
+	load_deroulement(m,s); //charge la vitesse et le deroulement du jeu
 	
 	
+	
+	//aff_map(m);
 	return m;
 }
 
@@ -83,29 +73,22 @@ void aff_map(level *m){
 	}
 }
 
-void load_deroulement(level *l,int fd){
-	char buffer[64]; char *s=NULL; int i=0;
-	int ret = 0;
-	ret = read(fd,buffer,4); buffer[ret-1] = '\0' ;
-	s=strpbrk(buffer," "); *s='\0';
-	
-	
-	l->speed = (float)strtol(buffer,NULL,10)/strtol(buffer+2,NULL,10); //recup la vitesse
-	
-	
-	ret = read(fd,buffer,3); buffer[ret-1] = '\0' ;
-	l->total= (float)strtol(buffer,NULL,10); //recup la vitesse
+void load_deroulement(level *l,char* chaine){
+	char *s=NULL; int i=0;
+	s=strtok(chaine," "); float speed1 = (float)strtol(s,NULL,10);
+	s=strtok(NULL,"\n"); float speed2 = (float)strtol(s,NULL,10);
+	l->speed = speed1/speed2; //recup la vitesse	
+	s=strtok(NULL,"\n");
+	//printf("%s \n",s);
+	l->total= (float)strtol(s,NULL,10); //recup la vitesse
 	l->deroulement = calloc(l->total,sizeof(char));
 	
 	
 	for(i=0;i<l->total;i++){
-		ret = read(fd,buffer,2); buffer[ret-1] = '\0' ;
-		l->deroulement[i] = strtol(buffer,NULL,10);
+		s=strtok(NULL,"\n");
+	        //printf("i : %s \n",s);
+		l->deroulement[i] = strtol(s,NULL,10);
 	}
-	
-	
+	//printf("fini \n");
 }
-
-
-
 
