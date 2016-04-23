@@ -9,6 +9,7 @@
 #include <fcntl.h>
 #include <string.h>
 #include "brique.h"
+#include <sys/time.h>
 
 #define BUFMAX 1024	
 #define HAUTEUR 28 //taille par defaut du jeu entier

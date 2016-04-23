@@ -52,7 +52,7 @@ void aff_brique(brique *b){
 
 
 
-void input(brique *b){ //gere les touche appuyer
+int input(brique *b){ //gere les touche appuyer
 	char buffer[8];
 	int r=read(0,buffer,8);
 	if(buffer[0] == 27){
@@ -64,9 +64,10 @@ void input(brique *b){ //gere les touche appuyer
 			}
 		}
 	}else if(buffer[0] == 'q'){
-		exit(EXIT_SUCCESS);
+		return 2;
 	}
 	
+	return 0;
 	
 }
 

@@ -8,6 +8,7 @@
 #include <sys/stat.h>
 #include <fcntl.h>
 #include <string.h>
+#include <poll.h>
 
 typedef struct brique{
 	char **bloc; //corps de la brique
@@ -21,7 +22,7 @@ brique read_brique(char* chaine);
 void aff_brique(brique *b);
 
 void move(brique *b,int x,int y);
-void input(brique *b);
+int input(brique *b);
 
 
 #endif
