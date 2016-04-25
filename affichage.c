@@ -64,9 +64,9 @@ void aff_map(level *m){
 	int i=0, j=0;
 	for(i=0;i< m->hauteur;i++){
 		for(j=0;j< m->largeur;j++){
-			if(m->map[i][j]=='1')
-				write(1,"@",1);
-			else if(m->map[i][j]=='0'){
+			if(m->map[i][j]=='1'){
+				write(1,"\u2588",3); //code en hexa de l unicode carre
+			}else if(m->map[i][j]=='0'){
 				write(1," ",1);
 			}
 		}write(1,"\n",1);

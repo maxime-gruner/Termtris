@@ -42,7 +42,7 @@ void aff_brique(brique *b){
 			write(1,buffer,strlen(buffer));
 			
 			if(b->bloc[i][j] == '1'){
-				write(1,"@",1);
+				write(1,"\u2588",3);
 			}else if(b->bloc[i][j]=='0')
 				write(1," ",1);
 			
