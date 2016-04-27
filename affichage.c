@@ -16,18 +16,18 @@ level *read_level(int fd){
 	
 	
 	m->map = malloc(m->largeur*m->hauteur);
-	for(i=0;i<m->hauteur; i++){
+	for(i=m->hauteur-1; i>=0; i--){
 		m->map[i] = calloc(m->largeur,1);
 	}
 	
 	/*Chargement de la map */
-	for(i=0;i<m->hauteur;i++){
+	for(i=m->hauteur-1; i>=0; i--){
 		/*Bas de la map charge a partir du fichier */
-		if(i>= m->hauteur-haut_debut){
+		if(i>=HAUTEUR-haut_debut){
 			s=strtok(NULL,"\n"); //lit toute la ligne de le map
 		}
 		for(j=0;j< m->largeur;j++){
-			if(i< m->hauteur-haut_debut ){
+			if(i<HAUTEUR-haut_debut ){
 				m->map[i][j] = '0';
 			}else{
 				m->map[i][j]=s[j];
@@ -62,7 +62,7 @@ level *read_level(int fd){
 /* affichera la map dans le terminal */
 void aff_map(level *m){
 	int i=0, j=0;
-	for(i=0;i< m->hauteur;i++){
+	for(i=0;i<m->hauteur;i++){
 		for(j=0;j< m->largeur;j++){
 			if(m->map[i][j]=='1'){
 				write(1,"\u2588",3); //code en hexa de l unicode carre
@@ -92,3 +92,21 @@ void load_deroulement(level *l,char* chaine){
 	//printf("fini \n");
 }
 
+bool touche (level* m, brique* br){
+  int i,j;
+  for(i=br->h_brique-1;i>=0;i--){
+    for(j=0;j<br->l_brique;j++){
+      if ((br->bloc[i][j]=='1') &&  (m->map[i+br->pos_x][j-1+br->pos_y] == '1')) return false;
+    }
+  }
+  return true;
+}
+
+void add_brique(level* m, brique* br){
+  int i, j;
+  for(i=br->h_brique-1;i>=0;i--){
+    for(j=0;j<br->l_brique;j++){
+      if(br->bloc[i][j]=='1') m->map[br->pos_x+i-1][br->pos_y+j-1]='1';
+    }
+  }
+}

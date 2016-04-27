@@ -43,8 +43,7 @@ void aff_brique(brique *b){
 			
 			if(b->bloc[i][j] == '1'){
 				write(1,"\u2588",3);
-			}else if(b->bloc[i][j]=='0')
-				write(1," ",1);
+			}
 			
 		}write(1,"\n",1);
 	}
