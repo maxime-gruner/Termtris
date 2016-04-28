@@ -23,6 +23,7 @@ void aff_brique(brique *b);
 
 void move(brique *b,int x,int y);
 int input(brique *b);
+void rotate(brique *b);
 
 
 #endif
