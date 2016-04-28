@@ -12,7 +12,7 @@ brique read_brique(char *chaine){
 	//printf("dim '%s'\n",s);
 		br.pos_x = 1; //pos initiale de spawn
 		br.pos_y = 20; 	
-		  br.bloc = malloc(1*br.h_brique); 
+		  br.bloc = malloc(sizeof(char*)*br.h_brique); 
 			for(i=0;i<br.h_brique;i++){
 				br.bloc[i] = calloc(br.l_brique,sizeof(char));
 					s=strtok(NULL,"\n"); 
@@ -34,7 +34,7 @@ void aff_brique(brique *b){
 	char buffer[32];
 	int i=0,j=0;
 	int x=b->pos_x, y=b->pos_y;
-	printf("l brique '%d' h brique '%d'\n",b->l_brique,b->h_brique);
+	printf("\nl brique '%d' h brique '%d' pos x '%d pos y '%d'\n",b->l_brique,b->h_brique,b->pos_x,b->pos_y);
 	for(i=0;i< b->h_brique;i++){
 		for(j=0;j< b->l_brique;j++){
 		
@@ -54,7 +54,8 @@ void aff_brique(brique *b){
 
 int input(brique *b){ //gere les touche appuyer
 	char buffer[8];
-	int r=read(0,buffer,8);
+	read(0,buffer,8);
+	
 	if(buffer[0] == 27){
 		if(buffer[1] == 91){
 			if(buffer[2]=='C'){ //droite
@@ -81,27 +82,27 @@ void move(brique *b,int x,int y){ //mouvement
 void rotate(brique *b){ //tourne la brique
 	
 	int i=0,j=0,h=0,l=b->h_brique-1;
-	//char tab[b->h_brique][b->l_brique];
-	brique *bck= malloc(sizeof(brique));
-	bck->h_brique = b->l_brique;
-	bck->l_brique = b->h_brique;
-	bck->pos_x = b->pos_x;
-	bck->pos_y = b->pos_y;
+	int tmp;
+	char tab[b->l_brique][b->h_brique];
 	
-	bck->bloc = malloc(sizeof(char)*bck->h_brique);
-	for(i=0;i<bck->h_brique;i++){
-		bck->bloc[i] = malloc(sizeof(char)*bck->l_brique);
-	}
 	
 	for(i=0;i<b->h_brique;i++){
 		for(j=0;j<b->l_brique;j++){
-			bck->bloc[h][l] = b->bloc[i][j];
+			tab[h][l] = b->bloc[i][j];
 			h++;
 		}l--;h=0;
 	}
 	
+	tmp = b->h_brique;
+	b->h_brique = b->l_brique ;
+	b->l_brique = tmp; 
 	
-	memcpy(b,bck,sizeof(brique));
+	
+	b->bloc= malloc(sizeof(char*)*b->h_brique);
+	for(i=0;i<b->h_brique;i++){
+		b->bloc[i] = calloc(sizeof(char),b->l_brique);
+		memmove(b->bloc[i],tab[i],b->l_brique);
+	}
 	
 }
 

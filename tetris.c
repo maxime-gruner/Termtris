@@ -35,7 +35,6 @@ int main (int argc, char *argv[]){
     struct timeval tv;
 	
 	write(1,"\x1b[?25l",6); //cache le curseur
-	char c;
 	int fd=open("mod1/niveaux/1",O_RDONLY);
 	
 		if(fd == -1){
@@ -48,13 +47,13 @@ int main (int argc, char *argv[]){
 		nb=m->deroulement[i];
 		brique tmp = m->brique_type[nb-1];
 		
-		while(tmp.pos_x < HAUTEUR){ //une fois en bas chngement de brique, mieux gerer quand les collisions seront faites
+		while(touche(m,&tmp)){ //une fois en bas chngement de brique, mieux gerer quand les collisions seront faites
 			write(1,"\e[1;1H\e[2J",11);
 			aff_map(m);
 			aff_brique(&tmp);
 			
-			tv.tv_sec = 1; //donc la brique descendra toutes les secondes
-			tv.tv_usec = 0;
+			tv.tv_sec = 0; //donc la brique descendra toutes les secondes
+			tv.tv_usec = 200000;
 			
 			while(tv.tv_sec > 0 || tv.tv_usec > 0){ //deplacement de la brique AVANT sa descente automatique, le select modife automatiquement le temps RESTANT si le timeout n est pas atteint
 			
@@ -78,8 +77,7 @@ int main (int argc, char *argv[]){
 				
 				
 			}
-		
-		//c=getchar();
+		add_brique(m,&tmp);
 		i++;
 	}while(i<m->total);
 	

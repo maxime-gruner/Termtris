@@ -10,6 +10,7 @@
 #include <string.h>
 #include "brique.h"
 #include <sys/time.h>
+#include <stdbool.h>
 
 #define BUFMAX 1024	
 #define HAUTEUR 28 //taille par defaut du jeu entier
@@ -32,7 +33,8 @@ void load_deroulement(level *l,char* chaine);
 
 
 void aff_map(level *m);
-
+bool touche (level* m, brique* br);
+void add_brique(level* m, brique* br);
 
 
 
