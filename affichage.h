@@ -36,7 +36,7 @@ void aff_map(level *m);
 bool touche (level* m, brique* br);
 void add_brique(level* m, brique* br);
 
-void line(level *m,int n);
+bool line(level *m);
 void suppr(level *m, int n);
 
 

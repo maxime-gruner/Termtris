@@ -109,20 +109,22 @@ void add_brique(level* m, brique* br){
       }
     }
   }
-  line(m,br->pos_x+br->h_brique-1);
+  while(line(m));
 }
 
-void line(level *m,int n){ //verif si il y a une ligne complete a partir de la ligne n (et au dessus) 
+bool line(level *m){ //verif si il y a une ligne complete a partir
 	int i=0,j=0;
-	for(i=n;i>=0;i--){
+	for(i=HAUTEUR-1;i>=0;i--){
 		for(j=0;j<m->largeur;j++){
 			if(m->map[i][j]=='0'){
 				break;
 			}else if(j == m->largeur-1 ){
 				suppr(m,i);
+				return true;
 			}
 		}
 	}
+	return false;
 }
 
 void suppr(level *m,int n){ //supprime la ligne n et va decaler le reste
