@@ -95,7 +95,6 @@ bool touche (level* m, brique* br){
   for(i=br->h_brique-1;i>=0;i--){
     for(j=0;j<br->l_brique;j++){
       if ((br->bloc[i][j]=='1') &&  (m->map[i+br->pos_x][j-1+br->pos_y] == '1')) return false;
-      //else if(br->bloc[i][j]=='1' && br->pos_x+i == HAUTEUR-1 ) return false;
     }
   }
   return true;
@@ -105,7 +104,33 @@ void add_brique(level* m, brique* br){
   int i, j;
   for(i=br->h_brique-1;i>=0;i--){
     for(j=0;j<br->l_brique;j++){
-      if(br->bloc[i][j]=='1') m->map[br->pos_x+i-1][br->pos_y+j-1]='1';
+      if(br->bloc[i][j]=='1'){
+      	m->map[br->pos_x+i-1][br->pos_y+j-1]='1';
+      }
     }
   }
+  line(m,br->pos_x+br->h_brique-1);
 }
+
+void line(level *m,int n){ //verif si il y a une ligne complete a partir de la ligne n (et au dessus) 
+	int i=0,j=0;
+	for(i=n;i>=0;i--){
+		for(j=0;j<m->largeur;j++){
+			if(m->map[i][j]=='0'){
+				break;
+			}else if(j == m->largeur-1 ){
+				suppr(m,i);
+			}
+		}
+	}
+}
+
+void suppr(level *m,int n){ //supprime la ligne n et va decaler le reste
+	int i=0,j=0;
+	for(i=n;i>0;i--){
+		for(j=0;j<m->largeur;j++){
+			m->map[i][j] = m->map[i-1][j];
+		}
+	}
+}
+
