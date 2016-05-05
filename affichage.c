@@ -7,12 +7,11 @@ level *read_level(int fd){
   char buffer[BUFMAX];
   read(fd,buffer,BUFMAX); //lit les dimension
   char *s=strtok(buffer," ");
-  int haut_debut = strtol(buffer,NULL,10); //convertis les dimensions en entier
+  int haut_debut = strtol(s,NULL,10); //convertis les dimensions en entier
   s=strtok(NULL,"\n");
   m->largeur = strtol(s,NULL,10);
   m->hauteur = HAUTEUR;
 	
-	//printf("'%d %d'\n",m->hauteur, m->largeur);
 	
 	
 	m->map = malloc(m->largeur*m->hauteur);
@@ -37,15 +36,11 @@ level *read_level(int fd){
 	
 	/* Chargement des briques */ 
 	s=strtok(NULL,"\n");
-	m->n_brique = strtol(buffer,NULL,10);
+	m->n_brique = strtol(s,NULL,10);
 	m->brique_type = malloc(m->n_brique*sizeof(brique)); //initalisation tableau des type de brique
 	s=strtok(NULL,"\0");
-	//printf("%s\n",s);
 	for(i=0;i<m->n_brique;i++){
-		//printf("brique %i\n",i);
 		m->brique_type[i] = read_brique(s); //charge les different type de brique
-	
-		
 	}
 	
 	load_deroulement(m,s); //charge la vitesse et le deroulement du jeu
@@ -77,17 +72,14 @@ void load_deroulement(level *l,char* chaine){
 	s=strtok(NULL,"\n"); float speed2 = (float)strtol(s,NULL,10);
 	l->speed = speed1/speed2; //recup la vitesse	
 	s=strtok(NULL,"\n");
-	//printf("%s \n",s);
 	l->total= (float)strtol(s,NULL,10); //recup la vitesse
 	l->deroulement = calloc(l->total,sizeof(int));
 	
 	
 	for(i=0;i<l->total;i++){
 		s=strtok(NULL,"\n");
-	        //printf("i : %s \n",s);
 		l->deroulement[i] = strtol(s,NULL,10);
 	}
-	//printf("fini \n");
 }
 
 bool touche (level* m, brique* br){
