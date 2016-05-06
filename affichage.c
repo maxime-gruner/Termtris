@@ -106,7 +106,7 @@ void add_brique(level* m, brique* br){
 
 bool line(level *m){ //verif si il y a une ligne complete a partir
 	int i=0,j=0;
-	for(i=HAUTEUR-1;i>=0;i--){
+	for(i=HAUTEUR-2;i>=0;i--){
 		for(j=0;j<m->largeur;j++){
 			if(m->map[i][j]=='0'){
 				break;

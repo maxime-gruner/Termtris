@@ -53,7 +53,7 @@ int main (int argc, char *argv[]){
 			aff_brique(&tmp);
 			
 			tv.tv_sec = 0; //donc la brique descendra toutes les secondes
-			tv.tv_usec = 200000;
+			tv.tv_usec = 100000;
 			
 			while(tv.tv_sec > 0 || tv.tv_usec > 0){ //deplacement de la brique AVANT sa descente automatique, le select modife automatiquement le temps RESTANT si le timeout n est pas atteint
 			
@@ -61,7 +61,7 @@ int main (int argc, char *argv[]){
 				FD_SET(0, &rfds);
 				ret = select(1, &rfds, NULL, NULL, &tv); //attends tv seconds, ou un appuie dans ce cas on attendra encore le temps restant
 				if(ret>0){ 
-						ret2=input(&tmp); 
+						ret2=input(&tmp,m); 
 						if(ret2==2){ //juste pour recuperer un terminal normal si on quitte eb appuyant sur q
 							restore_term(&save_term);
 							write(1,"\x1b[?25h",6); //remet le curseur
@@ -73,7 +73,7 @@ int main (int argc, char *argv[]){
 				}
 			}
 			
-				move(&tmp,1,0); //descente auto
+				move(&tmp,1,0,m); //descente auto
 				
 				
 			}

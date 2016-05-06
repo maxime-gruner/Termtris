@@ -9,7 +9,9 @@
 #include <fcntl.h>
 #include <string.h>
 #include <poll.h>
+#include <stdbool.h>
 
+#define HAUTEUR 28 //taille par defaut du jeu entier
 typedef struct brique{
 	char **bloc; //corps de la brique
 	int l_brique; //largeur de la brique
@@ -18,11 +20,23 @@ typedef struct brique{
 	int pos_y;
 }brique;
 
+/* Structure representant la map*/
+typedef struct level{
+	int largeur; //largeur de le map
+	int hauteur; //hauteur de la map
+	char **map; //map
+	
+	int n_brique;
+	brique *brique_type; //tableau de taille n type de brique
+	float speed;
+	int total;
+	int *deroulement;
+}level;
+
 brique read_brique(char* chaine);
 void aff_brique(brique *b);
-
-void move(brique *b,int x,int y);
-int input(brique *b);
+void move(brique *b,int x,int y,level* m);
+int input(brique *b, level* m);
 void rotate(brique *b);
 
 
