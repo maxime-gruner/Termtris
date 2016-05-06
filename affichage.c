@@ -76,6 +76,8 @@ void aff_map(level *m){
 				write(1," ",1);
 			}
 		}write(1,"\n",1);
+	}for(i=0;i< m->largeur;i++){
+		write(1,"\u2594",4);
 	}
 }
 
@@ -99,6 +101,7 @@ bool touche (level* m, brique* br){
   int i,j;
   for(i=br->h_brique-1;i>=0;i--){
     for(j=0;j<br->l_brique;j++){
+      if(br->h_brique-1+br->pos_x == HAUTEUR ) return false;
       if ((br->bloc[i][j]=='1') &&  (m->map[i+br->pos_x][j-1+br->pos_y].val == '1')) return false;
     }
   }
@@ -120,7 +123,7 @@ void add_brique(level* m, brique* br){
 
 bool line(level *m){ //verif si il y a une ligne complete a partir
 	int i=0,j=0;
-	for(i=HAUTEUR-2;i>=0;i--){
+	for(i=HAUTEUR-1;i>=0;i--){
 		for(j=0;j<m->largeur;j++){
 			if(m->map[i][j].val=='0'){
 				break;
