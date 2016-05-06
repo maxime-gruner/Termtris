@@ -1,7 +1,7 @@
 #include "brique.h"
 
 
-brique read_brique(char *chaine){
+brique read_brique(char *chaine, int c){
 	int i=0, j=0;
 	brique br;
 	char *s;
@@ -20,7 +20,7 @@ brique read_brique(char *chaine){
 						br.bloc[i][j]=s[j];
 			}
 		}
-		
+	br.color=c%9+1;
 	s=strtok(NULL,"\0");
 	strcpy(chaine,s);
 	
@@ -42,7 +42,17 @@ void aff_brique(brique *b){
 			write(1,buffer,strlen(buffer));
 			
 			if(b->bloc[i][j] == '1'){
-				write(1,"\u2584",3);
+				switch(b->color){
+				  case 1: write(1,"\033[31m\u2588\033[0m",12); break;
+				  case 2: write(1,"\033[32m\u2588\033[0m",12); break;
+				  case 3: write(1,"\033[33m\u2588\033[0m",12); break;
+				  case 4: write(1,"\033[34m\u2588\033[0m",12); break;
+				  case 5: write(1,"\033[35m\u2588\033[0m",12); break;
+				  case 6: write(1,"\033[36m\u2588\033[0m",12); break;
+				  case 7: write(1,"\033[37m\u2588\033[0m",12); break;
+				  case 8: write(1,"\033[38m\u2588\033[0m",12); break;
+				  case 9: write(1,"\033[39m\u2588\033[0m",12); break;
+				}
 			}else if(b->bloc[i][j]=='0'){
 				write(1," ",1);
 			}
@@ -79,7 +89,7 @@ void move(brique *br,int x,int y,level* m){ //mouvement
   bool possible = true;
   for(i=br->h_brique-1;i>=0;i--){
     for(j=0;j<br->l_brique;j++){
-      if ((br->bloc[i][j]=='1') &&  ((m->map[i+br->pos_x][j+y-1+br->pos_y] == '1') || (j+y-1+br->pos_y)<0 || (j+y-1+br->pos_y)>m->largeur-1)) possible=false;
+      if ((br->bloc[i][j]=='1') &&  ((m->map[i+br->pos_x][j+y-1+br->pos_y].val == '1') || (j+y-1+br->pos_y)<0 || (j+y-1+br->pos_y)>m->largeur-1)) possible=false;
     }
   }
   if(possible) br->pos_y =br->pos_y+y;
