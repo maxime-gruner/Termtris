@@ -53,7 +53,7 @@ int main (int argc, char *argv[]){
 			aff_brique(&tmp);
 			
 			tv.tv_sec = 0; //donc la brique descendra toutes les secondes
-			tv.tv_usec = 100000;
+			tv.tv_usec = m->speed;
 			
 			while(tv.tv_sec > 0 || tv.tv_usec > 0){ //deplacement de la brique AVANT sa descente automatique, le select modife automatiquement le temps RESTANT si le timeout n est pas atteint
 			

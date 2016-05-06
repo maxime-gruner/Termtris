@@ -70,7 +70,7 @@ void load_deroulement(level *l,char* chaine){
 	char *s=NULL; int i=0;
 	s=strtok(chaine," "); float speed1 = (float)strtol(s,NULL,10);
 	s=strtok(NULL,"\n"); float speed2 = (float)strtol(s,NULL,10);
-	l->speed = speed1/speed2; //recup la vitesse	
+	l->speed = speed1*1000000/speed2; //recup la vitesse	
 	s=strtok(NULL,"\n");
 	l->total= (float)strtol(s,NULL,10); //recup la vitesse
 	l->deroulement = calloc(l->total,sizeof(int));
