@@ -138,6 +138,7 @@ void suppr(level *m,int n){ //supprime la ligne n et va decaler le reste
 	for(i=n;i>0;i--){
 		for(j=0;j<m->largeur;j++){
 			m->map[i][j].val = m->map[i-1][j].val;
+			m->map[i][j].color = m->map[i-1][j].color;
 		}
 	}
 }
