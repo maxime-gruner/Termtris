@@ -77,7 +77,7 @@ int input(brique *b, level* m){ //gere les touche appuyer
 	}else if(buffer[0] == 'q'){
 		return 2;
 	}else if(buffer[0] == ' '){
-		rotate(b);
+		rotate(m,b);
 	}
 	
 	return 0;
@@ -96,11 +96,17 @@ void move(brique *br,int x,int y,level* m){ //mouvement
   br->pos_x =br->pos_x+x;
 }
 
-void rotate(brique *b){ //tourne la brique
+void rotate(level *m,brique *b){ //tourne la brique
 	
 	int i=0,j=0,h=0,l=b->h_brique-1;
 	int tmp;
 	char tab[b->l_brique][b->h_brique];
+	
+	if( b->pos_y +b->h_brique - m->largeur-1> 0 ) return;
+	for(i=0;i<b->l_brique;i++){
+		if(m->map[b->pos_x+i][b->pos_y].val == '1')
+			return;
+	}
 	
 	for(i=0;i<b->h_brique;i++){
 		for(j=0;j<b->l_brique;j++){

@@ -46,7 +46,7 @@ brique read_brique(char* chaine,int c);
 void aff_brique(brique *b);
 void move(brique *b,int x,int y,level* m);
 int input(brique *b, level* m);
-void rotate(brique *b);
+void rotate(level *m,brique *b);
 
 
 #endif
