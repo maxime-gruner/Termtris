@@ -75,7 +75,8 @@ void aff_map(level *m){
 			}else if(m->map[i][j].val=='0'){
 				write(1," ",1);
 			}
-		}write(1,"\n",1);
+		}write(1,"\u258F",4);
+		write(1,"\n",1);
 	}for(i=0;i< m->largeur;i++){
 		write(1,"\u2594",4);
 	}
