@@ -7,10 +7,9 @@ all: $(EXEC)
 
 
 
-tetris: tetris.o affichage.o brique.o
+tetris: tetris.o affichage.o brique.o jeu.o
 	$(CC) $(CFLAGS) -o $@ $^ 
 
-main.o : brique.h
 
 %.o: %.c
 	$(CC) $(CFLAGS) -o $@ -c $< 
