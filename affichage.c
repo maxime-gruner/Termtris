@@ -97,17 +97,6 @@ void load_deroulement(level *l,char* chaine){
 	}
 }
 
-bool touche (level* m, brique* br){
-  int i,j;
-  for(i=br->h_brique-1;i>=0;i--){
-    for(j=0;j<br->l_brique;j++){
-      if(br->h_brique-1+br->pos_x == HAUTEUR ) return false;
-      if ((br->bloc[i][j]=='1') &&  (m->map[i+br->pos_x][j-1+br->pos_y].val == '1')) return false;
-    }
-  }
-  return true;
-}
-
 void add_brique(level* m, brique* br){
   int i, j;
   for(i=br->h_brique-1;i>=0;i--){

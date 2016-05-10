@@ -26,7 +26,7 @@ int set_term(struct termios *original){
 
 
 int main (int argc, char *argv[]){
-	int i=0; int nb;int ret; int ret2;
+	int i=0; int nb;int ret=1; int ret2;
 	write(1,"\e[1;1H\e[2J",11); //place le curseur en haut a gauche, et clear le terminal
 	struct termios save_term;
 	set_term(&save_term);
@@ -46,7 +46,7 @@ int main (int argc, char *argv[]){
 	do{ //q permet de quitter sinon attendre les 17 briques
 		nb=m->deroulement[i];
 		brique tmp = m->brique_type[nb-1];
-		
+		int down_allowed =0; // on ne peut utiliser la descente auto qu'au bout de 2 descente
 		while(touche(m,&tmp)){ //une fois en bas chngement de brique, mieux gerer quand les collisions seront faites
 			write(1,"\e[1;1H\e[2J",11);
 			aff_map(m);
@@ -67,6 +67,7 @@ int main (int argc, char *argv[]){
 							write(1,"\x1b[?25h",6); //remet le curseur
 							return 0;
 						}
+						if(ret2==3 && down_allowed>= 2) tv.tv_usec/=10; // si on reste appuyé sur bas, on descend 10x plus vite.
 						write(1,"\e[1;1H\e[2J",11);
 						aff_map(m);
 						aff_brique(&tmp);
@@ -75,8 +76,9 @@ int main (int argc, char *argv[]){
 			
 				move(&tmp,1,0,m); //descente auto
 				
-				
-			}
+			down_allowed ++;
+		}
+			
 		add_brique(m,&tmp);
 		i++;
 	}while(i<m->total);

@@ -61,6 +61,17 @@ void aff_brique(brique *b){
 }
 
 
+bool touche (level* m, brique* br){
+  int i,j;
+  for(i=br->h_brique-1;i>=0;i--){
+    for(j=0;j<br->l_brique;j++){
+      if(br->h_brique-1+br->pos_x == HAUTEUR ) return false;
+      if ((br->bloc[i][j]=='1') &&  (m->map[i+br->pos_x][j-1+br->pos_y].val == '1')) return false;
+    }
+  }
+  return true;
+}
+
 
 int input(brique *b, level* m){ //gere les touche appuyer
 	char buffer[8];
@@ -72,6 +83,8 @@ int input(brique *b, level* m){ //gere les touche appuyer
 				move(b,0,1,m);
 			}else if(buffer[2]=='D'){ //gauche
 				move(b,0,-1,m);
+			}else if(buffer[2]=='B'){ //gauche
+			  return 3;
 			}
 		}
 	}else if(buffer[0] == 'q'){
@@ -86,14 +99,20 @@ int input(brique *b, level* m){ //gere les touche appuyer
 
 void move(brique *br,int x,int y,level* m){ //mouvement
   int i,j;
-  bool possible = true;
+  bool possible_y = true, possible_x = true;
   for(i=br->h_brique-1;i>=0;i--){
     for(j=0;j<br->l_brique;j++){
-      if ((br->bloc[i][j]=='1') &&  ((m->map[i+br->pos_x][j+y-1+br->pos_y].val == '1') || (j+y-1+br->pos_y)<0 || (j+y-1+br->pos_y)>m->largeur-1)) possible=false;
+      if ((br->bloc[i][j]=='1') &&  ((m->map[i+br->pos_x][j+y-1+br->pos_y].val == '1') || (j+y-1+br->pos_y)<0 || (j+y-1+br->pos_y)>m->largeur-1)) possible_y=false;
     }
   }
-  if(possible) br->pos_y =br->pos_y+y;
-  br->pos_x =br->pos_x+x;
+  if(possible_y) br->pos_y =br->pos_y+y;
+  for(i=br->h_brique-1;i>=0;i--){
+    for(j=0;j<br->l_brique;j++){
+      if(br->h_brique-1+br->pos_x == HAUTEUR ) possible_x = false;
+      if ((br->bloc[i][j]=='1') &&  (m->map[i+br->pos_x][j-1+br->pos_y].val == '1')) possible_x = false;
+    }
+  }
+  if(possible_x) br->pos_x =br->pos_x+x;
 }
 
 void rotate(level *m,brique *b){ //tourne la brique
