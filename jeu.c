@@ -28,8 +28,7 @@ int set_term(struct termios *original){
 
 /* JEU, prends le nom d'un niveau en parametre, retoune 0 si finis, 1 si quitter */
 int jeu1(char *nom){
-	int i=0; int nb;int ret=1; int ret2;
-	
+	int i=0; int nb;int ret=1; int ret2;int touch;
 	fd_set rfds;
     struct timeval tv;
 	
@@ -46,8 +45,13 @@ int jeu1(char *nom){
 		nb=m->deroulement[i];
 		brique tmp = m->brique_type[nb-1];
 		int down_allowed =0; // on ne peut utiliser la descente auto qu'au bout de 2 descente
-		while(touche(m,&tmp)){ //une fois en bas chngement de brique, mieux gerer quand les collisions seront faites
+		while((touch=touche(m,&tmp))<1 || touch ==2){ //une fois en bas chngement de brique
 			write(1,"\e[1;1H\e[2J",11);
+			if(touch == 2){
+				return 1;
+			}
+			
+			
 			aff_map(m);
 			aff_brique(&tmp);
 			
@@ -76,7 +80,7 @@ int jeu1(char *nom){
 				
 			down_allowed ++;
 		}
-			
+		
 		add_brique(m,&tmp);
 		i++;
 	}while(i<m->total);
@@ -152,10 +156,11 @@ void menu(){
 	struct dirent *cur_dir;
 	
 	choix = malloc(sizeof(char*));
-	write(1,"\e[20;12H",10); //je voulais a peu pres centrer l affichage, il veut pas
+	write(1,"\e[18;0H",7); 
 	while((cur_dir = (readdir(mydir)))){ //affiche tout les dossiers du repertoire
 		if(cur_dir->d_type == DT_DIR && cur_dir->d_name[0] != '.'){ //evite les dossiers speciaux
 			choix[i] = malloc(sizeof(char)*PATHSIZE);
+			write(1,"\e[10C",5); 
 			write(1,cur_dir->d_name,strlen(cur_dir->d_name));
 			write(1,"\n\n",2);
 			memcpy(choix[i],cur_dir->d_name,strlen(cur_dir->d_name));
@@ -166,12 +171,13 @@ void menu(){
 	i=0;
 	
 	write(1,"Entrez le numero du mode\n",26);
-	nb=read(0,buffer,BUFMAX);
-	if(nb == -1){
-		perror("Erreur read numero mod");
-		return;
-	}
-	
+	do{
+		nb=read(0,buffer,BUFMAX);
+		if(nb == -1){
+			perror("Erreur read numero mod");
+			return;
+		}
+	}while(buffer[0]<'0' || buffer[0]>'9'); //controle la valeur entre par le joueur
 	int a=strtol(buffer,NULL,10);
 	
 	

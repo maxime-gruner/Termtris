@@ -34,7 +34,7 @@ void aff_brique(brique *b){
 	char buffer[32];
 	int i=0,j=0;
 	int x=b->pos_x, y=b->pos_y;
-	printf("\nl brique '%d' h brique '%d' pos x '%d pos y '%d'\n",b->l_brique,b->h_brique,b->pos_x,b->pos_y);
+	printf("\nl brique '%d' h brique '%d' pos x '%d pos y '%d'\n",b->l_brique,b->h_brique,b->pos_x-b->h_brique,b->pos_y);
 	for(i=0;i< b->h_brique;i++){
 		for(j=0;j< b->l_brique;j++){
 		
@@ -61,15 +61,18 @@ void aff_brique(brique *b){
 }
 
 
-bool touche (level* m, brique* br){
+int touche (level* m, brique* br){
   int i,j;
   for(i=br->h_brique-1;i>=0;i--){
     for(j=0;j<br->l_brique;j++){
-      if(br->h_brique-1+br->pos_x == HAUTEUR ) return false;
-      if ((br->bloc[i][j]=='1') &&  (m->map[i+br->pos_x][j-1+br->pos_y].val == '1')) return false;
+      
+      if(br->h_brique-1+br->pos_x == HAUTEUR ) return 1; //bas du jeu
+      if ((br->bloc[i][j]=='1') &&  (m->map[i+br->pos_x][j-1+br->pos_y].val == '1')) return 1; //un bloc en dessous
+      
+      if ((br->bloc[i][j]=='1') &&  (m->map[i+br->pos_x-1][j-1+br->pos_y].val == '1') && br->pos_x-br->h_brique-1 <=2) return 2; //perdu
     }
   }
-  return true;
+  return 0;
 }
 
 

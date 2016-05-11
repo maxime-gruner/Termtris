@@ -47,7 +47,7 @@ void aff_brique(brique *b);
 void move(brique *b,int x,int y,level* m);
 int input(brique *b, level* m);
 void rotate(level *m,brique *b);
-bool touche (level* m, brique* br);
+int touche (level* m, brique* br);
 
 
 #endif
