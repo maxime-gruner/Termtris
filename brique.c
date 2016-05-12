@@ -11,7 +11,7 @@ brique read_brique(char *chaine, int c){
 	br.l_brique = strtol(s,NULL,10); 
 	//printf("dim '%s'\n",s);
 		br.pos_x = 1; //pos initiale de spawn
-		br.pos_y = 20; 	
+		br.pos_y = 6; 	
 		  br.bloc = malloc(sizeof(char*)*br.h_brique); 
 			for(i=0;i<br.h_brique;i++){
 				br.bloc[i] = calloc(br.l_brique,sizeof(char));

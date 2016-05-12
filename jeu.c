@@ -1,7 +1,7 @@
 #include "jeu.h"
 #include <dirent.h>
 
-
+bool fin_niveau = false;
 /* restaure le shell en mode normal */
 void restore_term(struct termios *save){
 	tcsetattr(0,TCSANOW,save);
@@ -42,8 +42,7 @@ int jeu1(char *nom){
 		close(fd);
 		
 	do{ //q permet de quitter sinon attendre les 17 briques
-		nb=m->deroulement[i];
-		brique tmp = m->brique_type[nb-1];
+		brique tmp = m->brique_type[rand()%m->n_brique];
 		int down_allowed =0; // on ne peut utiliser la descente auto qu'au bout de 2 descente
 		while((touch=touche(m,&tmp))<1 || touch ==2){ //une fois en bas chngement de brique
 			write(1,"\e[1;1H\e[2J",11);
@@ -83,7 +82,7 @@ int jeu1(char *nom){
 		
 		add_brique(m,&tmp);
 		i++;
-	}while(i<m->total);
+	}while(!fin_niveau);
 	
 	
 	return 0;
@@ -100,10 +99,12 @@ void niveaux(char ** deroulement){
 		res=jeu1(deroulement[i]);
 		if(res == 1){
 			write(1,"Vous avez perdu !\n",18);
+			fin_niveau=true;
 			return;
 		}
 		if(res == 0){
 			write(1,"Niveau suivant !\n",17);
+			fin_niveau=true;
 		}
 		i++;
 	}
