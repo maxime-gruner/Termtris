@@ -38,23 +38,23 @@ void aff_brique(brique *b){
 	for(i=0;i< b->h_brique;i++){
 		for(j=0;j< b->l_brique;j++){
 		
-			sprintf(buffer,"\e[%d;%dH",x+i,y+j);
+			sprintf(buffer,"\e[%d;%dH",x+i,2*(y+j)-1);
 			write(1,buffer,strlen(buffer));
 			
 			if(b->bloc[i][j] == '1'){
 				switch(b->color){
-				  case 1: write(1,"\033[31m\u2588\033[0m",12); break;
-				  case 2: write(1,"\033[32m\u2588\033[0m",12); break;
-				  case 3: write(1,"\033[33m\u2588\033[0m",12); break;
-				  case 4: write(1,"\033[34m\u2588\033[0m",12); break;
-				  case 5: write(1,"\033[35m\u2588\033[0m",12); break;
-				  case 6: write(1,"\033[36m\u2588\033[0m",12); break;
-				  case 7: write(1,"\033[37m\u2588\033[0m",12); break;
-				  case 8: write(1,"\033[38m\u2588\033[0m",12); break;
-				  case 9: write(1,"\033[39m\u2588\033[0m",12); break;
+				  case 1: write(1,"\033[31m\u2588\u2588\033[0m",15); break;
+				  case 2: write(1,"\033[32m\u2588\u2588\033[0m",15); break;
+				  case 3: write(1,"\033[33m\u2588\u2588\033[0m",15); break;
+				  case 4: write(1,"\033[34m\u2588\u2588\033[0m",15); break;
+				  case 5: write(1,"\033[35m\u2588\u2588\033[0m",15); break;
+				  case 6: write(1,"\033[36m\u2588\u2588\033[0m",15); break;
+				  case 7: write(1,"\033[37m\u2588\u2588\033[0m",15); break;
+				  case 8: write(1,"\033[38m\u2588\u2588\033[0m",15); break;
+				  case 9: write(1,"\033[39m\u2588\u2588\033[0m",15); break;
 				}
 			}else if(b->bloc[i][j]=='0'){
-				write(1," ",1);
+				write(1,"  ",2);
 			}
 		}write(1,"\n",1);
 	}
