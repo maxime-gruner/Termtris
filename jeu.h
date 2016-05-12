@@ -14,7 +14,8 @@ int jeu1(char *nom);
 void menu();
 char **deroulement(char *mod);
 
-
-
+void free_deroulement(char **tab );
+void free_choix(char **tab,int size );
+void free_map(level *m);
 
 #endif

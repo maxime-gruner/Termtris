@@ -23,7 +23,22 @@ int set_term(struct termios *original){
 }
 
 
-
+void free_map(level *m){
+	int i=0,j=0;
+	for(i=0;i<m->hauteur;i++){
+		free(m->map[i]);
+	}
+	free(m->map);
+	for(i=0;i<m->n_brique;i++){
+		brique tmp = m->brique_type[i];
+		for (j = 0; j < tmp.h_brique; j ++){
+			free(tmp.bloc[j]);
+		}free(tmp.bloc);
+	}free(m->brique_type);
+	
+	free(m->deroulement);
+	free(m);
+}
 
 /* JEU, prends le nom d'un niveau en parametre, retoune 0 si finis, 1 si quitter */
 int jeu1(char *nom){
@@ -66,7 +81,7 @@ int jeu1(char *nom){
 				if(ret>0){ 
 						ret2=input(&tmp,m); 
 						if(ret2==2){ //juste pour recuperer un terminal normal si on quitte eb appuyant sur q
-							
+							free_map(m);
 							return 1;
 						}
 						if(ret2==3 && down_allowed>= 2) tv.tv_usec/=10; // si on reste appuyé sur bas, on descend 10x plus vite.
@@ -84,6 +99,7 @@ int jeu1(char *nom){
 		add_brique(m,&tmp);
 	}while(i<m->total);
 	
+	free_map(m);
 	
 	return 0;
 }
@@ -146,6 +162,25 @@ char **deroulement_niveau(char *mod){
 	return deroulement;
 }
 
+
+void free_choix(char **tab,int size ){
+	int j=0;
+	for (j = 0; j <= size+1;j ++){
+		free(tab[j]);
+	}
+	free(tab);
+}
+
+void free_deroulement(char **tab ){
+	int j=0;
+	while(tab[j] != NULL){
+		free(tab[j]);
+		j++;
+	}
+	free(tab);
+}
+
+
 /* Menu du jeu */
 void menu(){ 
 	char path[PATHSIZE]; int i =0; char buffer[BUFMAX]; int nb=0;
@@ -183,9 +218,12 @@ void menu(){
 	
 	
 	deroulement_jeu = deroulement_niveau(choix[a-1]);
-	i=0;
+	
 	
 	niveaux(deroulement_jeu);
+	
+	free_choix(choix,i);
+	free_deroulement(deroulement_jeu);
 	
 	closedir(mydir);
 }

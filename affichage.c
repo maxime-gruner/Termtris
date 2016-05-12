@@ -13,7 +13,6 @@ level *read_level(int fd){
   m->hauteur = HAUTEUR;
 	
 	
-	
 	m->map = malloc(m->largeur*m->hauteur*sizeof(point));
 	for(i=m->hauteur-1; i>=0; i--){
 		m->map[i] = calloc(m->largeur,sizeof(point));
