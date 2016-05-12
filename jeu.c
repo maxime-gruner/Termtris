@@ -25,7 +25,6 @@ int set_term(struct termios *original){
 
 
 
-
 /* JEU, prends le nom d'un niveau en parametre, retoune 0 si finis, 1 si quitter */
 int jeu1(char *nom){
 	int i=0; int nb;int ret=1; int ret2;int touch;
@@ -42,7 +41,9 @@ int jeu1(char *nom){
 		close(fd);
 		
 	do{ //q permet de quitter sinon attendre les 17 briques
-		brique tmp = m->brique_type[rand()%m->n_brique];
+		 brique tmp;
+		if(m->total != -1) { nb=m->deroulement[i]; tmp = m->brique_type[nb-1]; i++;}
+		else if (m->total == -1){ tmp = m->brique_type[rand()%(m->n_brique)]; i=-2; }
 		int down_allowed =0; // on ne peut utiliser la descente auto qu'au bout de 2 descente
 		while((touch=touche(m,&tmp))<1 || touch ==2){ //une fois en bas chngement de brique
 			write(1,"\e[1;1H\e[2J",11);
@@ -81,8 +82,7 @@ int jeu1(char *nom){
 		}
 		
 		add_brique(m,&tmp);
-		i++;
-	}while(!fin_niveau);
+	}while(i<m->total);
 	
 	
 	return 0;
