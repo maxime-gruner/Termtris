@@ -41,7 +41,7 @@ level *read_level(int fd){
 	m->brique_type = malloc(m->n_brique*sizeof(brique)); //initalisation tableau des type de brique
 	s=strtok(NULL,"\0");
 	for(i=0;i<m->n_brique;i++){
-		m->brique_type[i] = read_brique(s,count); //charge les different type de brique
+		m->brique_type[i] = read_brique(s,count,m->largeur); //charge les different type de brique
 		count++;
 	}
 	

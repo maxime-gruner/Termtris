@@ -42,7 +42,7 @@ typedef struct level{
 	int *deroulement;
 }level;
 
-brique read_brique(char* chaine,int c);
+brique read_brique(char* chaine,int c, int pos);
 void aff_brique(brique *b);
 void move(brique *b,int x,int y,level* m);
 int input(brique *b, level* m);
