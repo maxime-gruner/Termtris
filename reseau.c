@@ -84,7 +84,7 @@ int add_brique_reseau(level* m, brique* br,int sock){
   return 0;
 }
 
-int envoi(int sock, level *l,char  ){
+int envoi(int sock, level *l  ){
 	
 	write(sock,"1",1);
 	
