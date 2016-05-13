@@ -10,6 +10,7 @@ int set_term(struct termios *original);
 
 
 int jeu1(char *nom);
+int jeu_reseau(int sock, char *path);
 
 void menu();
 char **deroulement(char *mod);

@@ -1,4 +1,5 @@
 #include "jeu.h"
+#include "reseau.h"
 #include <dirent.h>
 
 bool fin_niveau = false;
@@ -103,6 +104,78 @@ int jeu1(char *nom){
 	
 	return 0;
 }
+
+/* jeu reseau, se deroulera sur la map infini */
+int jeu_reseau(int sock, char *niveau){
+	int i=0; int nb=0;int ret=1; int ret2;int touch;
+	
+	
+	fd_set rfds;
+    struct timeval tv;
+	
+	int fd=open(niveau,O_RDONLY);
+	
+		if(fd == -1){
+			perror("erreur ouverture de fichier");
+			return -1;
+		}
+		level *m=read_level(fd);
+		close(fd);
+		
+	do{ //q permet de quitter sinon attendre les 17 briques
+		brique tmp;
+		if(m->total != -1) { nb=m->deroulement[i]; tmp = m->brique_type[nb-1]; i++;}
+		else if (m->total == -1){ tmp = m->brique_type[rand()%(m->n_brique)]; i=-2; }
+		int down_allowed =0; // on ne peut utiliser la descente auto qu'au bout de 2 descente
+		while((touch=touche(m,&tmp))<1 || touch ==2){ //une fois en bas chngement de brique
+			write(1,"\e[1;1H\e[2J",11);
+			if(touch == 2){
+				return 1;
+			}
+			
+			recoi(sock,m);
+			
+			aff_map(m);
+			aff_brique(&tmp);
+			
+			tv.tv_sec = 0; //donc la brique descendra toutes les secondes
+			tv.tv_usec = m->speed;
+			
+			while(tv.tv_sec > 0 || tv.tv_usec > 0){ //deplacement de la brique AVANT sa descente automatique, le select modife automatiquement le temps RESTANT si le timeout n est pas atteint
+				
+				
+				
+				FD_ZERO(&rfds); //reset a chaque boucle obligatoire
+				FD_SET(0, &rfds);
+				ret = select(1, &rfds, NULL, NULL, &tv); //attends tv seconds, ou un appuie dans ce cas on attendra encore le temps restant
+				if(ret>0){ 
+						ret2=input(&tmp,m); 
+						if(ret2==2){ //juste pour recuperer un terminal normal si on quitte eb appuyant sur q
+							free_map(m);
+							return 1;
+						}
+						if(ret2==3 && down_allowed>= 2) tv.tv_usec/=10; // si on reste appuyé sur bas, on descend 10x plus vite.
+						write(1,"\e[1;1H\e[2J",11);
+						aff_map(m);
+						aff_brique(&tmp);
+				}
+			}
+			
+				move(&tmp,1,0,m); //descente auto
+				
+			down_allowed ++;
+		}
+		
+		add_brique_reseau(m,&tmp,sock);
+		
+	}while(i<m->total);
+	
+	free_map(m);
+	
+	return 0;
+}
+
+
 
 /* Lane les niveaux les uns apres les autres */
 void niveaux(char ** deroulement){
@@ -213,7 +286,7 @@ void menu(){
 			perror("Erreur read numero mod");
 			return;
 		}
-	}while(buffer[0]<'0' || buffer[0]>'9'); //controle la valeur entre par le joueur
+	}while(buffer[0]<'0' || buffer[0]>'9' ); //controle la valeur entre par le joueur
 	int a=strtol(buffer,NULL,10);
 	
 	
