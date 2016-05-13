@@ -78,38 +78,47 @@ int add_brique_reseau(level* m, brique* br,int sock){
     }
   }
   while(line(m)){
-  	envoi(sock,m);
-  	break;
+  	envoi(sock,m," ");
   }
   return 0;
 }
 
-int envoi(int sock, level *l  ){
-	
+int envoi(int sock, level *l ,char *msg ){
+	if(strcmp(msg,"perdu")==0){
+		write(1,"Perdu!\n",7);
+		return 1;
+	}
 	write(sock,"1",1);
 	
 	return 0;
 }
 
-void recoi(int sock,level *l){
+int recoi(int sock,level *l){
 	struct pollfd fds[1]; int ret=0; int i=0,j=0;
-	char buffer[BUFMAX];
+	char buffer[BUFMAX]={0}; int r=0;
 	fds[0].fd = sock; 
 	fds[0].events = POLLIN;
 	ret=poll(fds,1,0);
 	if(ret>0){
 		if(fds[0].revents & POLLIN ){
-			read(fds[0].fd,buffer,BUFMAX); //sert a rien mais obliger de lire
-			i = rand()%l->hauteur;
-			j =	rand()%l->largeur;
-			l->map[i][j].val ='1';
+			r=rand()%5;
+			read(fds[0].fd,buffer,BUFMAX); 
+			if(strcmp(buffer,"perdu")==0){
+				return 1;
+			}
+			if(r>2){
+				i = rand()%((l->hauteur-5)-10)+10; //tire un nombre entre 10 et l->hauteur-2
+				j =	rand()%(l->largeur-1);
+				l->map[i][j].val ='1';
+			}else l->speed = l->speed/5;
 		}
 	}
+	return 0;
 }
 
 
 void mode_reseau(){
-	int sock;
+	int sock; int res=0;
 	int nb=0; char buffer[BUFMAX];
 	write(1,"Serveur ou client ?\n",20);
 	write(1,"1 Serveur \n2 Client\n",20);
@@ -143,6 +152,13 @@ void mode_reseau(){
 		sock=connect_serv(buffer);
 	}
 	
-	jeu_reseau(sock,"mod2/niveaux/1");
+	res=jeu_reseau(sock,"mod2/niveaux/1");
+	write(1,"\e[1;1H\e[2J",11);
+	if(res == 1){
+			write(1,"Vous avez perdu !\n",18);
+			return;
+	}else{
+		write(1,"Gagnez !\n",9);
+	}
 	shutdown(sock,2);
 }

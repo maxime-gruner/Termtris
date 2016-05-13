@@ -1,6 +1,8 @@
 #include "jeu.h"
 #include "reseau.h"
 #include <dirent.h>
+#include <time.h>
+
 
 bool fin_niveau = false;
 /* restaure le shell en mode normal */
@@ -109,7 +111,7 @@ int jeu1(char *nom){
 int jeu_reseau(int sock, char *niveau){
 	int i=0; int nb=0;int ret=1; int ret2;int touch;
 	
-	
+	srand(time(NULL));
 	fd_set rfds;
     struct timeval tv;
 	
@@ -121,28 +123,32 @@ int jeu_reseau(int sock, char *niveau){
 		}
 		level *m=read_level(fd);
 		close(fd);
+		int save_speed = m->speed;
 		
-	do{ //q permet de quitter sinon attendre les 17 briques
-		brique tmp;
+	do{ //q permet de quitter 
+		brique tmp; 
 		if(m->total != -1) { nb=m->deroulement[i]; tmp = m->brique_type[nb-1]; i++;}
 		else if (m->total == -1){ tmp = m->brique_type[rand()%(m->n_brique)]; i=-2; }
 		int down_allowed =0; // on ne peut utiliser la descente auto qu'au bout de 2 descente
 		while((touch=touche(m,&tmp))<1 || touch ==2){ //une fois en bas chngement de brique
 			write(1,"\e[1;1H\e[2J",11);
-			if(touch == 2){
+			if(touch == 2){ //perdu
+				envoi(sock,m,"perdu");
 				return 1;
 			}
 			
-			recoi(sock,m);
+			if(recoi(sock,m) == 1){
+				return 0;
+			}
 			
 			aff_map(m);
 			aff_brique(&tmp);
+			
 			
 			tv.tv_sec = 0; //donc la brique descendra toutes les secondes
 			tv.tv_usec = m->speed;
 			
 			while(tv.tv_sec > 0 || tv.tv_usec > 0){ //deplacement de la brique AVANT sa descente automatique, le select modife automatiquement le temps RESTANT si le timeout n est pas atteint
-				
 				
 				
 				FD_ZERO(&rfds); //reset a chaque boucle obligatoire
@@ -151,6 +157,7 @@ int jeu_reseau(int sock, char *niveau){
 				if(ret>0){ 
 						ret2=input(&tmp,m); 
 						if(ret2==2){ //juste pour recuperer un terminal normal si on quitte eb appuyant sur q
+							envoi(sock,m,"perdu");
 							free_map(m);
 							return 1;
 						}
@@ -165,7 +172,7 @@ int jeu_reseau(int sock, char *niveau){
 				
 			down_allowed ++;
 		}
-		
+		m->speed = save_speed;
 		add_brique_reseau(m,&tmp,sock);
 		
 	}while(i<m->total);

@@ -15,8 +15,8 @@ int creer_serveur();
 int connect_serv(char *ip);
 int add_brique_reseau(level* m, brique* br,int sock);
 
-int envoi(int sock, level *l);
-void recoi(int sock, level *l);
+int envoi(int sock, level *l, char *msg);
+int recoi(int sock, level *l);
 
 
 
