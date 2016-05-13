@@ -64,6 +64,7 @@ int connect_serv(char *ip){
 		return -1;
 		
 	}
+	
 	return sock;
 }
 
@@ -150,6 +151,10 @@ void mode_reseau(){
 			write(1,buffer,nb_total-1);
 			write(1,"\n",1);
 		sock=connect_serv(buffer);
+		if(sock == -1){
+			write(1,"Connection echoue\n",18);
+			return;
+		}
 	}
 	
 	res=jeu_reseau(sock,"mod2/niveaux/1");
