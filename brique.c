@@ -53,8 +53,6 @@ void aff_brique(brique *b){
 				  case 8: write(1,"\033[38m\u2588\u2588\033[0m",15); break;
 				  case 9: write(1,"\033[39m\u2588\u2588\033[0m",15); break;
 				}
-			}else if(b->bloc[i][j]=='0'){
-				write(1,"  ",2);
 			}
 		}write(1,"\n",1);
 	}

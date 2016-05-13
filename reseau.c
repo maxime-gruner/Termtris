@@ -28,7 +28,7 @@ int creer_serveur(){
 		perror("Fail listen ");
 		return -1;
 	}
-	
+	write(1,"Listen...\n",10);
 	int sock2 = accept(sock,(struct sockaddr*)&peer_addr,&sizeaddr);
 	if(sock2 == - 1){
 		perror("Fail socket 2 ");
@@ -147,7 +147,7 @@ void mode_reseau(){
 				perror("Erreur ip");
 				return;
 			}
-		}while(buffer[nb_total-1] != 13); 
+		}while(buffer[nb_total-1] != 13); buffer[nb_total-1]='\0';
 			write(1,buffer,nb_total-1);
 			write(1,"\n",1);
 		sock=connect_serv(buffer);
