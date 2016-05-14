@@ -14,15 +14,10 @@
 
 #define BUFMAX 1024	
 
-/* Structure representant la map*/
-
 level *read_level(int fd);
 void load_deroulement(level *l,char* chaine);
-
-
 void aff_map(level *m);
 void add_brique(level* m, brique* br);
-
 bool line(level *m);
 void suppr(level *m, int n);
 
