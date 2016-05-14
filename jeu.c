@@ -214,7 +214,7 @@ char **deroulement_niveau(char *mod){
 	char **deroulement;
 	
 	memcpy(path,mod,PATHSIZE); //copie de mod avant de la changer
-	deroulement = malloc(sizeof(char*));
+	deroulement = malloc(sizeof(char*)*5);
 	
 	strcat(mod,"/deroulement");
 	
@@ -245,7 +245,7 @@ char **deroulement_niveau(char *mod){
 
 void free_choix(char **tab,int size ){
 	int j=0;
-	for (j = 0; j <= size+1;j ++){
+	for (j = 0; j < size;j ++){
 		free(tab[j]);
 	}
 	free(tab);
@@ -267,24 +267,25 @@ void menu(){
 	char **deroulement_jeu;
 	getcwd(path,PATHSIZE);
 	
-	char **choix; 
+	char **choix={0}; 
 	DIR* mydir = opendir(path); 
 	struct dirent *cur_dir;
 	
-	choix = malloc(sizeof(char*));
+	choix = malloc(sizeof(char*)*5);
 	write(1,"\e[18;0H",7); 
-	while((cur_dir = (readdir(mydir)))){ //affiche tout les dossiers du repertoire
+	while((cur_dir = (readdir(mydir)))!= NULL){ //affiche tout les dossiers du repertoire
 		if(cur_dir->d_type == DT_DIR && cur_dir->d_name[0] != '.'){ //evite les dossiers speciaux
 			choix[i] = malloc(sizeof(char)*PATHSIZE);
 			write(1,"\e[10C",5); 
 			write(1,cur_dir->d_name,strlen(cur_dir->d_name));
 			write(1,"\n\n",2);
-			memcpy(choix[i],cur_dir->d_name,strlen(cur_dir->d_name));
+			memcpy(choix[i],cur_dir->d_name,strlen(cur_dir->d_name)+1);
 			i++;
+			
 		}
 		
 	}choix[i] = NULL;
-	i=0;
+	
 	
 	write(1,"Entrez le numero du mode\n",26);
 	do{

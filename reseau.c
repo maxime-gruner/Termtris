@@ -157,7 +157,7 @@ void mode_reseau(){
 		}
 	}
 	
-	res=jeu_reseau(sock,"mod2/niveaux/1");
+	res=jeu_reseau(sock,"mod3_reseau/niveaux/1");
 	write(1,"\e[1;1H\e[2J",11);
 	if(res == 1){
 			write(1,"Vous avez perdu !\n",18);
