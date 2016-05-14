@@ -1,16 +1,6 @@
 #ifndef AFF_H
 #define AFF_H
-#include <stdio.h>
-#include <stdlib.h>
-#include <termios.h>
-#include <unistd.h>
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <fcntl.h>
-#include <string.h>
 #include "brique.h"
-#include <sys/time.h>
-#include <stdbool.h>
 
 #define BUFMAX 1024	
 

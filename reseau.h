@@ -1,12 +1,7 @@
 #ifndef RES_H
 #define RES_H
-#include <sys/types.h>
 #include <sys/socket.h>
 #include <arpa/inet.h>
-#include <stdio.h>
-#include <unistd.h>
-#include <string.h>
-#include <poll.h>
 #include "jeu.h"
 
 

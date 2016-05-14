@@ -3,8 +3,6 @@
 #include "jeu.h"
 #include "reseau.h"
 
-#include <poll.h>
-
 
 
 

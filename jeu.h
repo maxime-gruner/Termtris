@@ -2,7 +2,6 @@
 #define JEU_H
 #include "affichage.h"
 #include "brique.h"
-#include <poll.h>
 #define PATHSIZE 256
 
 void restore_term(struct termios *save);
